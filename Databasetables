@@ -1,0 +1,46 @@
+-- Create the database
+CREATE DATABASE bookstore;
+\c bookstore  -- Connect to the bookstore database (PostgreSQL syntax)
+
+-- Authors table
+CREATE TABLE authors (
+    author_id SERIAL PRIMARY KEY,
+    name VARCHAR(100) NOT NULL,
+    bio TEXT
+);
+
+-- Books table
+CREATE TABLE books (
+    book_id SERIAL PRIMARY KEY,
+    title VARCHAR(200) NOT NULL,
+    isbn VARCHAR(20) UNIQUE NOT NULL,
+    price NUMERIC(8, 2) NOT NULL,
+    stock INT DEFAULT 0,
+    author_id INT REFERENCES authors(author_id)
+);
+
+-- Customers table
+CREATE TABLE customers (
+    customer_id SERIAL PRIMARY KEY,
+    name VARCHAR(100) NOT NULL,
+    email VARCHAR(100) UNIQUE NOT NULL,
+    phone VARCHAR(15),
+    address TEXT
+);
+
+-- Orders table
+CREATE TABLE orders (
+    order_id SERIAL PRIMARY KEY,
+    customer_id INT REFERENCES customers(customer_id),
+    order_date TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+);
+
+-- OrderItems table
+CREATE TABLE order_items (
+    order_item_id SERIAL PRIMARY KEY,
+    order_id INT REFERENCES orders(order_id),
+    book_id INT REFERENCES books(book_id),
+    quantity INT NOT NULL,
+    item_price NUMERIC(8, 2) NOT NULL
+);
+
